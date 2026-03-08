@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smile Date 8-3 🌹 Hẹn hò ngày Phụ nữ</title>
+  <meta name="description" content="Tìm chỗ hoàn hảo để hẹn hò — Homestay, Cafe, Công viên. Smile Date 8-3 Special.">
+  <meta property="og:title" content="🌹 Smile Date 8-3 — Tìm chỗ hoàn hảo để hẹn hò">
+  <meta property="og:description"
+    content="Bản đồ hẹn hò lãng mạn ngày 8-3. Homestay couple, cafe, công viên & deals đặc biệt!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://smile-date-8-3.vercel.app">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="🌹 Smile Date 8-3 — Tìm chỗ hoàn hảo để hẹn hò">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ═══════════ ROSE PETALS CANVAS ═══════════ -->
+  <canvas id="petals-canvas"></canvas>
+
+  <!-- ═══════════ NAVIGATION ═══════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">💐</span>
+      <span class="brand-text">Smile Date</span>
+    </div>
+    <div class="nav-links" id="nav-links">
+      <a href="#map-section" class="nav-link">🗺️ Map</a>
+      <a href="#deals-section" class="nav-link">💕 Deals</a>
+      <a href="#people-section" class="nav-link">👥 People</a>
+      <a href="#viral-section" class="nav-link">🔥 Viral</a>
+      <a href="#bot-section" class="nav-link">🤖 Bot</a>
+      <a href="#checkin-section" class="nav-link">📍 Check-in</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ═══════════ HERO SECTION ═══════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🌹 8-3 Special</div>
+      <h1 class="hero-title">
+        Smile <span class="text-gradient">Date</span>
+      </h1>
+      <p class="hero-subtitle">Tìm chỗ hoàn hảo để hẹn hò</p>
+      <p class="hero-desc">Homestay – Cafe – Công viên</p>
+      <div class="hero-actions">
+        <a href="#map-section" class="btn btn-primary btn-glow">
+          <span>💑</span> Date Map
+        </a>
+        <a href="#people-section" class="btn btn-secondary">
+          <span>👥</span> People Near You
+        </a>
+        <a href="#deals-section" class="btn btn-outline">
+          <span>🏠</span> Couple Deals
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number" data-count="24">0</span>
+          <span class="stat-label">Điểm hẹn hò</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-count="8">0</span>
+          <span class="stat-label">Homestay lãng mạn</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-count="150">0</span>
+          <span class="stat-label">Cặp đôi hôm nay</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ DATE MAP ═══════════ -->
+  <section class="section" id="map-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">🗺️ Khám phá</span>
+        <h2 class="section-title">Date Map <span class="text-gradient">8-3</span></h2>
+        <p class="section-desc">Bản đồ hẹn hò — tất cả điểm lãng mạn quanh bạn</p>
+      </div>
+      <div class="map-filters">
+        <button class="filter-btn active" data-filter="all">✨ Tất cả</button>
+        <button class="filter-btn" data-filter="homestay">❤️ Homestay</button>
+        <button class="filter-btn" data-filter="food">🍜 Quán ăn</button>
+        <button class="filter-btn" data-filter="cafe">☕ Cà phê</button>
+        <button class="filter-btn" data-filter="park">🌳 Đi dạo</button>
+      </div>
+      <div class="map-wrapper">
+        <div id="date-map"></div>
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-dot homestay"></span> Homestay</div>
+          <div class="legend-item"><span class="legend-dot food"></span> Quán ăn</div>
+          <div class="legend-item"><span class="legend-dot cafe"></span> Cà phê</div>
+          <div class="legend-item"><span class="legend-dot park"></span> Đi dạo</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ COUPLE DEALS ═══════════ -->
+  <section class="section section-alt" id="deals-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">💕 Combo 8-3</span>
+        <h2 class="section-title">Couple <span class="text-gradient">Deals</span></h2>
+        <p class="section-desc">Gói đặc biệt dành riêng cho cặp đôi ngày 8-3</p>
+      </div>
+      <div class="deals-grid">
+        <!-- Deal 1 -->
+        <div class="deal-card">
+          <div class="deal-ribbon">Hot 🔥</div>
+          <div class="deal-icon">🌹</div>
+          <h3 class="deal-title">Couple 2h</h3>
+          <div class="deal-price">
+            <span class="price-amount">150<span class="price-unit">k</span></span>
+          </div>
+          <ul class="deal-perks">
+            <li>🌺 Hoa nhỏ tặng bạn gái</li>
+            <li>🍵 Trà nóng cho hai người</li>
+            <li>🔒 Phòng riêng tư</li>
+            <li>⏰ 2 giờ thư giãn</li>
+          </ul>
+          <button class="btn btn-primary btn-full" onclick="bookDeal('couple-2h')">
+            Đặt ngay 💑
+          </button>
+        </div>
+
+        <!-- Deal 2 -->
+        <div class="deal-card deal-featured">
+          <div class="deal-ribbon">Best 💎</div>
+          <div class="deal-icon">🌙</div>
+          <h3 class="deal-title">Couple Tối</h3>
+          <div class="deal-price">
+            <span class="price-amount">250<span class="price-unit">k</span></span>
+          </div>
+          <ul class="deal-perks">
+            <li>🌹 Hoa hồng & nến thơm</li>
+            <li>🍵 Trà + bánh ngọt</li>
+            <li>🔒 Phòng riêng tư premium</li>
+            <li>⏰ 3 giờ lãng mạn</li>
+            <li>📸 Chụp ảnh kỷ niệm</li>
+          </ul>
+          <button class="btn btn-primary btn-full btn-glow" onclick="bookDeal('couple-evening')">
+            Đặt ngay 💑
+          </button>
+        </div>
+
+        <!-- Deal 3 -->
+        <div class="deal-card">
+          <div class="deal-ribbon">Night 🌙</div>
+          <div class="deal-icon">✨</div>
+          <h3 class="deal-title">Night Deal</h3>
+          <div class="deal-price">
+            <span class="price-discount">-30%</span>
+            <span class="price-amount">175<span class="price-unit">k</span></span>
+          </div>
+          <ul class="deal-perks">
+            <li>🌙 20h – 24h đêm 8-3</li>
+            <li>🌹 Giảm 30% phòng couple</li>
+            <li>🍵 Trà miễn phí</li>
+            <li>🔒 Riêng tư tuyệt đối</li>
+          </ul>
+          <button class="btn btn-primary btn-full" onclick="bookDeal('night-deal')">
+            Đặt ngay 💑
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ DATE NEAR ME ═══════════ -->
+  <section class="section" id="nearme-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">📍 Gần bạn</span>
+        <h2 class="section-title">Date <span class="text-gradient">Near Me</span></h2>
+        <p class="section-desc">Homestay gần nhất — phòng trống — giá giờ</p>
+      </div>
+      <div class="nearme-grid" id="nearme-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ROMANTIC SPOTS ═══════════ -->
+  <section class="section section-alt" id="spots-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">💗 Top picks</span>
+        <h2 class="section-title">Top 10 <span class="text-gradient">Romantic Spots</span></h2>
+        <p class="section-desc">Chỗ hẹn hò lãng mạn nhất gần bạn</p>
+      </div>
+      <div class="spots-list" id="spots-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PEOPLE NEAR YOU ═══════════ -->
+  <section class="section" id="people-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">👥 Network</span>
+        <h2 class="section-title">People <span class="text-gradient">Near You</span></h2>
+        <p class="section-desc">Môi trường đúng → Con người đúng → Cơ hội đúng</p>
+      </div>
+
+      <!-- People Map -->
+      <div class="people-map-wrapper">
+        <div id="people-map"></div>
+        <div class="people-radius-badge">📡 Bán kính 500m</div>
+      </div>
+
+      <!-- People Cards -->
+      <div class="people-grid" id="people-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Signal + Group -->
+      <div class="signal-group-row">
+        <!-- Create Signal -->
+        <div class="signal-card">
+          <div class="signal-header">
+            <span class="signal-icon">📡</span>
+            <h3>Tạo Signal</h3>
+          </div>
+          <p class="signal-desc">Tạo tín hiệu để người đúng tìm thấy bạn</p>
+          <div class="signal-form">
+            <input type="text" class="signal-input" id="signal-input"
+              placeholder="VD: Tối nay 7h cafe, bàn về AI / startup..." maxlength="120">
+            <div class="signal-tags">
+              <button class="signal-tag" onclick="setSignal('☕ Cafe AI/Startup tối nay 7h')">☕ Cafe</button>
+              <button class="signal-tag" onclick="setSignal('🏠 Homestay meetup cuối tuần')">🏠 Meetup</button>
+              <button class="signal-tag" onclick="setSignal('💡 Brainstorm ideas sáng mai')">💡 Brainstorm</button>
+              <button class="signal-tag" onclick="setSignal('🌹 Tìm bạn đi dạo hồ Hoàn Kiếm')">🌹 Đi dạo</button>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="broadcastSignal()">📡 Phát Signal</button>
+          </div>
+        </div>
+
+        <!-- Small Group -->
+        <div class="signal-card">
+          <div class="signal-header">
+            <span class="signal-icon">🔥</span>
+            <h3>Nhóm nhỏ</h3>
+          </div>
+          <p class="signal-desc">5-10 người, gặp định kỳ, cơ hội nhanh nhất</p>
+          <div class="groups-list" id="groups-list">
+            <!-- Populated by JS -->
+          </div>
+          <button class="btn btn-outline btn-full" style="margin-top: var(--space-4)"
+            onclick="showToast('🔥 Đang tạo nhóm mới...', 'love')">
+            + Tạo nhóm mới
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Signals Feed -->
+      <div class="signals-feed">
+        <h3 class="feed-title">📡 Signals gần bạn</h3>
+        <div class="feed-list" id="feed-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SMILE BOT COMMAND CENTER ═══════════ -->
+  <section class="section" id="bot-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">🤖 Automation</span>
+        <h2 class="section-title">Smile <span class="text-gradient">Bot</span></h2>
+        <p class="section-desc">Tự động thực thi chiến lược kinh doanh trên các nền tảng</p>
+      </div>
+
+      <!-- Campaign Status -->
+      <div class="bot-status-bar">
+        <div class="status-item">
+          <span class="status-icon">🟢</span>
+          <span>Bot đang hoạt động</span>
+        </div>
+        <div class="status-item">
+          <span class="status-number" id="bot-posts">0</span>
+          <span>Posts tạo</span>
+        </div>
+        <div class="status-item">
+          <span class="status-number" id="bot-reach">0</span>
+          <span>Reach dự kiến</span>
+        </div>
+        <div class="status-item">
+          <span class="status-number" id="bot-platforms">0</span>
+          <span>Platforms</span>
+        </div>
+      </div>
+
+      <!-- Platform Cards -->
+      <div class="bot-grid">
+        <!-- TikTok -->
+        <div class="bot-card" data-platform="tiktok">
+          <div class="bot-card-header">
+            <span class="bot-platform-icon">🎬</span>
+            <div>
+              <h4>TikTok / Reels</h4>
+              <span class="bot-traffic">Traffic lớn nhất • Viral nhanh</span>
+            </div>
+          </div>
+          <div class="bot-content-preview" id="tiktok-content">
+            <div class="content-label">Caption đã tạo:</div>
+            <div class="content-text" id="tiktok-text">Bấm "Tạo nội dung" để bot tạo caption...</div>
+          </div>
+          <div class="bot-actions">
+            <button class="btn btn-small" onclick="generateContent('tiktok')">✨ Tạo nội dung</button>
+            <button class="btn btn-small" onclick="copyBotContent('tiktok')">📋 Copy</button>
+            <button class="btn btn-small" onclick="launchPlatform('tiktok')">🚀 Mở app</button>
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div class="bot-card" data-platform="facebook">
+          <div class="bot-card-header">
+            <span class="bot-platform-icon">📱</span>
+            <div>
+              <h4>Facebook Groups</h4>
+              <span class="bot-traffic">Community mạnh • Local reach</span>
+            </div>
+          </div>
+          <div class="bot-content-preview" id="facebook-content">
+            <div class="content-label">Bài post đã tạo:</div>
+            <div class="content-text" id="facebook-text">Bấm "Tạo nội dung" để bot tạo post...</div>
+          </div>
+          <div class="bot-actions">
+            <button class="btn btn-small" onclick="generateContent('facebook')">✨ Tạo nội dung</button>
+            <button class="btn btn-small" onclick="copyBotContent('facebook')">📋 Copy</button>
+            <button class="btn btn-small" onclick="launchPlatform('facebook')">🚀 Mở app</button>
+          </div>
+        </div>
+
+        <!-- Zalo -->
+        <div class="bot-card" data-platform="zalo">
+          <div class="bot-card-header">
+            <span class="bot-platform-icon">💬</span>
+            <div>
+              <h4>Zalo / Messenger</h4>
+              <span class="bot-traffic">Direct reach • Độ tin cậy cao</span>
+            </div>
+          </div>
+          <div class="bot-content-preview" id="zalo-content">
+            <div class="content-label">Tin nhắn đã tạo:</div>
+            <div class="content-text" id="zalo-text">Bấm "Tạo nội dung" để bot tạo tin nhắn...</div>
+          </div>
+          <div class="bot-actions">
+            <button class="btn btn-small" onclick="generateContent('zalo')">✨ Tạo nội dung</button>
+            <button class="btn btn-small" onclick="copyBotContent('zalo')">📋 Copy</button>
+            <button class="btn btn-small" onclick="launchPlatform('zalo')">🚀 Mở app</button>
+          </div>
+        </div>
+
+        <!-- Google Maps -->
+        <div class="bot-card" data-platform="gmaps">
+          <div class="bot-card-header">
+            <span class="bot-platform-icon">🗺️</span>
+            <div>
+              <h4>Google Maps / SEO</h4>
+              <span class="bot-traffic">Ý định mua cao • Local search</span>
+            </div>
+          </div>
+          <div class="bot-content-preview" id="gmaps-content">
+            <div class="content-label">Mô tả Google Business:</div>
+            <div class="content-text" id="gmaps-text">Bấm "Tạo nội dung" để bot tạo mô tả...</div>
+          </div>
+          <div class="bot-actions">
+            <button class="btn btn-small" onclick="generateContent('gmaps')">✨ Tạo nội dung</button>
+            <button class="btn btn-small" onclick="copyBotContent('gmaps')">📋 Copy</button>
+            <button class="btn btn-small" onclick="launchPlatform('gmaps')">🚀 Mở app</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- One-Click Campaign -->
+      <div class="bot-campaign">
+        <div class="campaign-header">
+          <h3>⚡ Chiến dịch 1-Click</h3>
+          <p>Tạo nội dung cho tất cả nền tảng cùng lúc</p>
+        </div>
+        <div class="campaign-actions">
+          <button class="btn btn-primary btn-glow" onclick="launchFullCampaign()">
+            🚀 Launch toàn bộ chiến dịch
+          </button>
+          <button class="btn btn-secondary" onclick="generateAllContent()">
+            ✨ Tạo nội dung all platforms
+          </button>
+        </div>
+        <div class="campaign-log" id="campaign-log"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ GAMIFICATION CHECK-IN ═══════════ -->
+  <section class="section" id="checkin-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">🎮 Trò chơi</span>
+        <h2 class="section-title">Smile Date <span class="text-gradient">Check-in</span></h2>
+        <p class="section-desc">Check-in cùng người yêu — nhận điểm thưởng — đổi quà</p>
+      </div>
+      <div class="checkin-wrapper">
+        <div class="checkin-card">
+          <div class="checkin-points">
+            <div class="points-circle">
+              <svg viewBox="0 0 120 120" class="points-ring">
+                <circle cx="60" cy="60" r="54" class="ring-bg" />
+                <circle cx="60" cy="60" r="54" class="ring-fill" id="points-ring" />
+              </svg>
+              <div class="points-value">
+                <span id="points-count">0</span>
+                <small>❤️ điểm</small>
+              </div>
+            </div>
+          </div>
+          <button class="checkin-btn" id="checkin-btn" onclick="doCheckin()">
+            <span class="checkin-icon">📍</span>
+            <span class="checkin-text">Smile Date Check-in</span>
+          </button>
+          <p class="checkin-hint">Bấm để check-in cùng người yêu!</p>
+        </div>
+
+        <div class="rewards-card">
+          <h3 class="rewards-title">🎁 Đổi điểm thưởng</h3>
+          <div class="rewards-list">
+            <div class="reward-item" data-cost="3">
+              <span class="reward-icon">🍵</span>
+              <div class="reward-info">
+                <span class="reward-name">Trà nóng miễn phí</span>
+                <span class="reward-cost">3 ❤️</span>
+              </div>
+              <button class="btn btn-small" onclick="redeemReward('tea', 3)">Đổi</button>
+            </div>
+            <div class="reward-item" data-cost="5">
+              <span class="reward-icon">🍪</span>
+              <div class="reward-info">
+                <span class="reward-name">Snack cho đôi</span>
+                <span class="reward-cost">5 ❤️</span>
+              </div>
+              <button class="btn btn-small" onclick="redeemReward('snack', 5)">Đổi</button>
+            </div>
+            <div class="reward-item" data-cost="10">
+              <span class="reward-icon">🏷️</span>
+              <div class="reward-info">
+                <span class="reward-name">Giảm 20% phòng</span>
+                <span class="reward-cost">10 ❤️</span>
+              </div>
+              <button class="btn btn-small" onclick="redeemReward('discount', 10)">Đổi</button>
+            </div>
+            <div class="reward-item" data-cost="15">
+              <span class="reward-icon">🌹</span>
+              <div class="reward-info">
+                <span class="reward-name">Bó hoa hồng</span>
+                <span class="reward-cost">15 ❤️</span>
+              </div>
+              <button class="btn btn-small" onclick="redeemReward('flowers', 15)">Đổi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ VIRAL FEATURES ═══════════ -->
+  <section class="section section-alt" id="viral-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">🔥 Viral</span>
+        <h2 class="section-title">Share & <span class="text-gradient">Go Viral</span></h2>
+        <p class="section-desc">Chia sẻ khoảnh khắc — bạn bè sẽ muốn thử ngay</p>
+      </div>
+
+      <div class="viral-grid">
+        <!-- LOVE LOCK -->
+        <div class="viral-card love-lock-card">
+          <div class="viral-card-glow"></div>
+          <div class="lock-visual">
+            <div class="lock-icon" id="lock-icon">🔓</div>
+            <div class="lock-hearts" id="lock-hearts"></div>
+          </div>
+          <h3>Love Lock <span class="text-gradient">Digital</span> 🔒❤️</h3>
+          <p class="viral-desc">Khóa tình yêu vĩnh viễn trên bản đồ — như cầu khóa Paris</p>
+          <div class="lock-form">
+            <input type="text" class="signal-input" id="lock-name1" placeholder="Tên bạn" maxlength="20">
+            <input type="text" class="signal-input" id="lock-name2" placeholder="Tên người yêu" maxlength="20">
+          </div>
+          <button class="btn btn-primary btn-full btn-glow" onclick="createLoveLock()">
+            🔒 Khóa tình yêu
+          </button>
+          <div class="lock-count">💕 <span id="lock-total">2,847</span> cặp đôi đã khóa</div>
+        </div>
+
+        <!-- MYSTERY DATE -->
+        <div class="viral-card mystery-card">
+          <div class="viral-card-glow"></div>
+          <div class="mystery-visual">
+            <div class="mystery-box" id="mystery-box">🎁</div>
+            <div class="mystery-sparkles"></div>
+          </div>
+          <h3>Mystery <span class="text-gradient">Date</span> 🎭</h3>
+          <p class="viral-desc">Chọn ngẫu nhiên — date bí ẩn — quay reaction cho TikTok!</p>
+          <div class="mystery-options">
+            <button class="mystery-mood" data-mood="romantic" onclick="selectMood(this)">🌹 Romantic</button>
+            <button class="mystery-mood" data-mood="adventure" onclick="selectMood(this)">🎢 Adventure</button>
+            <button class="mystery-mood" data-mood="chill" onclick="selectMood(this)">☕ Chill</button>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="generateMysteryDate()">
+            🎲 Surprise Me!
+          </button>
+          <div id="mystery-result" class="mystery-result"></div>
+        </div>
+      </div>
+
+      <!-- SHARE CARD PREVIEW -->
+      <div class="share-preview" id="share-preview" style="display:none">
+        <div class="share-card" id="share-card">
+          <div class="share-card-bg"></div>
+          <div class="share-card-content">
+            <div class="share-card-badge">🌹 Smile Date 8-3</div>
+            <div class="share-card-body" id="share-card-body"></div>
+            <div class="share-card-url">smile-date-8-3.vercel.app</div>
+          </div>
+        </div>
+        <div class="share-actions">
+          <button class="btn btn-primary" onclick="shareToSocial('facebook')">
+            📱 Share Facebook
+          </button>
+          <button class="btn btn-secondary" onclick="shareToSocial('twitter')">
+            🐦 Share Twitter
+          </button>
+          <button class="btn btn-outline" onclick="shareToSocial('native')">
+            📤 Share
+          </button>
+          <button class="btn btn-secondary" onclick="copyShareLink()">
+            📋 Copy Link
+          </button>
+        </div>
+      </div>
+
+      <!-- CHALLENGE -->
+      <div class="challenge-banner">
+        <div class="challenge-content">
+          <h3>🔥 #SmileDateChallenge</h3>
+          <p>Mở app → chọn Surprise Date → quay reaction bạn gái → đăng TikTok</p>
+          <p class="challenge-tag">#SmileDateChallenge #83 #HenHo83</p>
+        </div>
+        <button class="btn btn-primary btn-glow" onclick="shareChallenge()">
+          🎬 Tham gia Challenge
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="footer-logo">💐</span>
+          <h3>Smile Date 8-3</h3>
+          <p>Hẹn hò lãng mạn — Riêng tư — Nhanh — Gần</p>
+        </div>
+        <div class="footer-message">
+          <p class="footer-quote">"Chúc tất cả phụ nữ một ngày 8-3 thật hạnh phúc 🌹"</p>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Smile Ecosystem • Made with ❤️</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════ DATE NEAR ME FLOATING BUTTON ═══════════ -->
+  <button class="fab" id="fab-date" onclick="openDateNearMe()">
+    <span class="fab-icon">💑</span>
+    <span class="fab-text">Date near me</span>
+  </button>
+
+  <!-- ═══════════ MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TOAST ═══════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+  <script src="bot-engine.js"></script>
+</body>
+
+</html>
