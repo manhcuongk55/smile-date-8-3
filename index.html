@@ -86,6 +86,127 @@
     </div>
   </section>
 
+  <!-- ═══════════ FOR HIM — THU HÚT NAM GIỚI ═══════════ -->
+  <section class="section" id="forhim-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">🎯 Dành cho Anh</span>
+        <h2 class="section-title">Date <span class="text-gradient">Guide</span> cho Nam</h2>
+        <p class="section-desc">3 bước để có date hoàn hảo — không cần lo nghĩ</p>
+      </div>
+
+      <!-- 3-Step Strategy -->
+      <div class="forhim-grid">
+        <div class="forhim-card step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon">📍</div>
+          <h4>Chọn địa điểm</h4>
+          <p>Mở Map → chọn place phù hợp. Homestay couple từ 70k/h, cafe lãng mạn, công viên free.</p>
+          <a href="#map-section" class="btn btn-small">🗺️ Xem Map ngay</a>
+        </div>
+        <div class="forhim-card step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon">🎲</div>
+          <h4>Hoặc để AI chọn</h4>
+          <p>Không biết đi đâu? Bấm Mystery Date → app tự tạo lịch trình 4 bước. Chỉ cần đi theo.</p>
+          <a href="#viral-section" class="btn btn-small">🎭 Mystery Date</a>
+        </div>
+        <div class="forhim-card step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">🔒</div>
+          <h4>Ghi dấu ấn</h4>
+          <p>Khóa tình yêu digital → share story → bạn gái sẽ ấn tượng. 2,800+ cặp đã thử.</p>
+          <a href="#viral-section" class="btn btn-small">🔒 Love Lock</a>
+        </div>
+      </div>
+
+      <!-- Confidence Stats -->
+      <div class="forhim-stats">
+        <div class="confidence-card">
+          <div class="conf-icon">💰</div>
+          <div class="conf-info">
+            <div class="conf-number">150k</div>
+            <div class="conf-label">Budget tối thiểu cho date hoàn hảo</div>
+          </div>
+        </div>
+        <div class="confidence-card">
+          <div class="conf-icon">⏱️</div>
+          <div class="conf-info">
+            <div class="conf-number">10s</div>
+            <div class="conf-label">Tìm chỗ hẹn hò gần bạn</div>
+          </div>
+        </div>
+        <div class="confidence-card">
+          <div class="conf-icon">🎯</div>
+          <div class="conf-info">
+            <div class="conf-number">95%</div>
+            <div class="conf-label">Bạn gái ấn tượng với Love Lock</div>
+          </div>
+        </div>
+        <div class="confidence-card">
+          <div class="conf-icon">🔥</div>
+          <div class="conf-info">
+            <div class="conf-number">2.8k+</div>
+            <div class="conf-label">Anh em đã date thành công</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions for Him -->
+      <div class="forhim-actions">
+        <h3>⚡ Hành động ngay</h3>
+        <div class="quick-buttons">
+          <a href="#deals-section" class="btn btn-primary btn-glow">💰 Deal rẻ nhất 150k</a>
+          <a href="#viral-section" class="btn btn-secondary">🎲 Random Date Plan</a>
+          <button class="btn btn-outline" onclick="showDateBudget()">💵 Tính chi phí date</button>
+        </div>
+      </div>
+
+      <!-- Date Budget Calculator -->
+      <div class="budget-calc" id="budget-calc" style="display:none">
+        <h4>💵 Tính chi phí date nhanh</h4>
+        <div class="budget-grid">
+          <div class="budget-item">
+            <label>Homestay</label>
+            <select id="budget-room">
+              <option value="0">Không cần</option>
+              <option value="150000">Couple 2h — 150k</option>
+              <option value="250000">Couple Tối — 250k</option>
+              <option value="350000">Premium — 350k</option>
+            </select>
+          </div>
+          <div class="budget-item">
+            <label>Ăn uống</label>
+            <select id="budget-food">
+              <option value="100000">Bình thường — 100k</option>
+              <option value="200000">Ngon — 200k</option>
+              <option value="500000">Sang — 500k</option>
+            </select>
+          </div>
+          <div class="budget-item">
+            <label>Hoa / quà</label>
+            <select id="budget-gift">
+              <option value="0">Không mua</option>
+              <option value="50000">Hoa nhỏ — 50k</option>
+              <option value="150000">Bó hoa — 150k</option>
+              <option value="300000">Hoa + quà — 300k</option>
+            </select>
+          </div>
+          <div class="budget-item">
+            <label>Di chuyển</label>
+            <select id="budget-transport">
+              <option value="0">Đi bộ / xe máy</option>
+              <option value="50000">Grab — 50k</option>
+              <option value="100000">Grab 2 chiều — 100k</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="calcBudget()">💰 Tổng chi phí</button>
+        <div class="budget-result" id="budget-result"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════ DATE MAP ═══════════ -->
   <section class="section" id="map-section">
     <div class="container">

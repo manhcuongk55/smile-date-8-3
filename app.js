@@ -677,6 +677,36 @@ function broadcastSignal() {
   feed.insertBefore(newItem, feed.firstChild);
 }
 
+// ── FOR HIM: BUDGET CALCULATOR ──
+function showDateBudget() {
+  const calc = document.getElementById('budget-calc');
+  calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+  if (calc.style.display === 'block') {
+    calc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function calcBudget() {
+  const room = parseInt(document.getElementById('budget-room').value);
+  const food = parseInt(document.getElementById('budget-food').value);
+  const gift = parseInt(document.getElementById('budget-gift').value);
+  const transport = parseInt(document.getElementById('budget-transport').value);
+  const total = room + food + gift + transport;
+
+  const resultEl = document.getElementById('budget-result');
+  let msg = '';
+  if (total <= 200000) msg = '👍 Date tiết kiệm nhưng vẫn ấn tượng! Vừa túi tiền anh em.';
+  else if (total <= 500000) msg = '💕 Budget vừa đẹp! Date chất lượng, bạn gái chắc chắn hài lòng.';
+  else msg = '🔥 Date premium! Bạn gái sẽ nhớ đời. Worth it!';
+
+  resultEl.innerHTML = `
+    <div class="budget-total">${total.toLocaleString()}đ</div>
+    <div class="budget-msg">${msg}</div>
+  `;
+  resultEl.style.display = 'block';
+  showToast(`💰 Tổng chi phí date: ${total.toLocaleString()}đ`, 'success');
+}
+
 // ── VIRAL: LOVE LOCK ──
 const SHARE_URL = 'https://smile-date-8-3.vercel.app';
 
