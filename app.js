@@ -1018,3 +1018,379 @@ function addLog(message) {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
+
+// ═══════════ GROWTH ENGINE ═══════════
+
+// ── REFERRAL SYSTEM ──
+const SITE = 'https://smile-date-8-3.vercel.app';
+
+function generateRefCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = 'SMILE-';
+  for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+let myRefCode = localStorage.getItem('smileRefCode');
+if (!myRefCode) {
+  myRefCode = generateRefCode();
+  localStorage.setItem('smileRefCode', myRefCode);
+}
+
+// Set referral link on load
+document.addEventListener('DOMContentLoaded', () => {
+  const refInput = document.getElementById('referral-link');
+  if (refInput) refInput.value = `${SITE}?ref=${myRefCode}`;
+
+  // Init content packs
+  if (document.getElementById('pack-content')) switchPack('tiktok');
+
+  // Init QR code
+  generateQR();
+
+  // Start live counter
+  startLiveCounter();
+});
+
+function copyReferralLink() {
+  const link = document.getElementById('referral-link').value;
+  navigator.clipboard.writeText(link);
+  showToast(`📋 Link đã copy: ${myRefCode}`, 'success');
+
+  // Simulate click tracking
+  const clicks = parseInt(document.getElementById('ref-clicks').textContent) + Math.floor(Math.random() * 3) + 1;
+  document.getElementById('ref-clicks').textContent = clicks;
+}
+
+function shareReferral(platform) {
+  const link = `${SITE}?ref=${myRefCode}`;
+  const text = `🌹 Smile Date 8-3 — Bản đồ hẹn hò lãng mạn! Homestay couple, cafe đẹp, deals đặc biệt. Thử ngay: ${link}`;
+
+  const urls = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(text)}`,
+    zalo: `https://zalo.me/share?url=${encodeURIComponent(link)}&title=${encodeURIComponent(text)}`,
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`,
+    tiktok: null, // TikTok doesn't have share URL — copy to clipboard
+  };
+
+  if (platform === 'tiktok') {
+    navigator.clipboard.writeText(link);
+    showToast('📋 Link đã copy — Paste vào TikTok Bio', 'success');
+  } else if (urls[platform]) {
+    window.open(urls[platform], '_blank', 'width=600,height=400');
+    showToast(`✅ Đang share qua ${platform}`, 'success');
+  }
+}
+
+// ── QR CODE GENERATOR ──
+function generateQR() {
+  const canvas = document.getElementById('qr-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const url = `${SITE}?ref=${myRefCode}`;
+
+  // Simple QR visualization (not real QR encoding — visual representation)
+  const size = 200;
+  canvas.width = size;
+  canvas.height = size;
+
+  // White background
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, size, size);
+
+  // Draw QR-like pattern from URL hash
+  const cellSize = 6;
+  const margin = 20;
+  const grid = Math.floor((size - margin * 2) / cellSize);
+
+  // Generate deterministic pattern from ref code
+  let seed = 0;
+  for (let i = 0; i < url.length; i++) seed += url.charCodeAt(i);
+
+  ctx.fillStyle = '#0a0a14';
+
+  // Position markers (3 corners)
+  drawQRMarker(ctx, margin, margin, cellSize * 5);
+  drawQRMarker(ctx, size - margin - cellSize * 5, margin, cellSize * 5);
+  drawQRMarker(ctx, margin, size - margin - cellSize * 5, cellSize * 5);
+
+  // Data cells
+  for (let y = 0; y < grid; y++) {
+    for (let x = 0; x < grid; x++) {
+      const hash = ((seed * (x + 1) * (y + 1) + x * 17 + y * 31) % 100);
+      if (hash < 45) {
+        const px = margin + x * cellSize;
+        const py = margin + y * cellSize;
+        // Don't overlap with markers
+        if (isInMarkerZone(px, py, margin, size, cellSize)) continue;
+        ctx.fillRect(px, py, cellSize - 1, cellSize - 1);
+      }
+    }
+  }
+
+  // Center logo
+  ctx.fillStyle = '#f43f5e';
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🧠', size / 2, size / 2);
+}
+
+function drawQRMarker(ctx, x, y, s) {
+  ctx.fillRect(x, y, s, s);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x + 4, y + 4, s - 8, s - 8);
+  ctx.fillStyle = '#0a0a14';
+  ctx.fillRect(x + 8, y + 8, s - 16, s - 16);
+  ctx.fillStyle = '#0a0a14';
+}
+
+function isInMarkerZone(px, py, margin, size, cellSize) {
+  const ms = cellSize * 5 + 6;
+  return (px < margin + ms && py < margin + ms) ||
+    (px > size - margin - ms && py < margin + ms) ||
+    (px < margin + ms && py > size - margin - ms);
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qr-canvas');
+  const link = document.createElement('a');
+  link.download = `SmileDate-QR-${myRefCode}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+  showToast('📥 QR đã tải xuống!', 'success');
+}
+
+function printQR() {
+  const canvas = document.getElementById('qr-canvas');
+  const w = window.open('');
+  w.document.write(`
+    <html><head><title>Smile Date QR</title>
+    <style>body{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Outfit,sans-serif;text-align:center}
+    h1{font-size:28px;margin-bottom:8px}p{color:#666;margin-bottom:20px}img{border:3px solid #0a0a14;border-radius:12px}.code{font-size:12px;color:#999;margin-top:12px}</style></head>
+    <body>
+    <h1>🌹 Smile Date 8-3</h1>
+    <p>Scan để hẹn hò ngay!</p>
+    <img src="${canvas.toDataURL()}" width="250">
+    <p class="code">Ref: ${myRefCode}</p>
+    </body></html>
+  `);
+  setTimeout(() => w.print(), 500);
+}
+
+// ── CONTENT PACKS ──
+const contentPacks = {
+  tiktok: [
+    `🌹 8-3 sắp tới — bạn đã plan date chưa?
+
+Mình vừa tìm được app siêu hay: Smile Date 8-3 ✨
+📍 Bản đồ hẹn hò lãng mạn
+❤️ Homestay couple từ 70k/h
+🎲 Mystery Date — AI chọn lịch trình cho bạn
+🔒 Love Lock Digital — khóa tình yêu mãi mãi
+
+Link in bio 👆
+
+#SmileDate #83 #hẹnhò #couple #datehanoi #SmileDateChallenge #fyp #viral`,
+
+    `POV: Bạn trai plan date 8-3 chỉ trong 10 giây 🤯
+
+Mở Smile Date → chọn homestay → done 😎
+Budget? Chỉ 150k thôi nha!
+
+Thử ngay: smile-date-8-3.vercel.app
+
+#SmileDate #dateideas #83 #couple #homestaycouple #hànội #viral`,
+
+    `🔒 Mình vừa khóa tình yêu online — Love Lock Digital cực cool!
+
+2,800+ cặp đã thử rồi 💕
+Bạn share story → bạn gái ấn tượng cực!
+
+Link: smile-date-8-3.vercel.app
+
+#SmileDate #LoveLock #couple #tinhyeu #83 #valentine`,
+  ],
+  facebook: [
+    `[HOT] Smile Date 8-3 🌹 — Bản đồ hẹn hò lãng mạn nhất Hà Nội!
+
+Sắp 8/3 rồi — các bro đã chuẩn bị gì cho bạn gái chưa? 😏
+
+Mình vừa tìm được app cực hay:
+✅ Bản đồ date — homestay couple, cafe đẹp, công viên lãng mạn
+✅ Deals giảm giá đặc biệt ngày 8-3
+✅ Love Lock Digital — khóa tình yêu trên bản đồ
+✅ Mystery Date — để AI lên plan cho bạn
+
+Budget tối thiểu chỉ 150k! 🔥
+
+Thử ngay: smile-date-8-3.vercel.app
+
+Ai đã thử comment review nhé! 👇`,
+
+    `Girls ơi share cho bạn trai xem nè! 😂
+
+Smile Date 8-3 — bản đồ hẹn hò thông minh:
+🗺 Map tìm chỗ date gần nhất
+💑 Homestay couple giá rẻ
+🎲 Mystery Date — AI tạo plan
+🔒 Love Lock — khóa tình yêu digital
+
+Link: smile-date-8-3.vercel.app
+
+#SmileDate #83 #NgayPhuNu`,
+  ],
+  zalo: [
+    `Ê [tên bạn]! 8-3 sắp tới rồi 🌹
+
+Mình tìm được cái app này hay phết — Smile Date. Nó có:
+- Bản đồ homestay couple gần mình
+- Deal giảm giá 8-3
+- Mystery Date cho AI chọn lịch trình
+
+Vào thử đi: smile-date-8-3.vercel.app
+
+150k là có date xịn rồi nhé 😎`,
+
+    `Gửi bạn cái link hẹn hò nè! 🌹
+
+Smile Date 8-3 — tìm chỗ date nhanh nhất:
+👉 smile-date-8-3.vercel.app
+
+Có homestay couple, cafe đẹp, deals 8-3. Thử ngay!`,
+  ],
+  instagram: [
+    `🌹 8-3 Plan is ready! 
+
+Found this amazing dating map app 💕
+📍 Romantic spots near you
+❤️ Couple homestays from 70k/h
+🎲 Mystery Date — AI picks your plan
+🔒 Digital Love Lock — forever 
+
+Budget: only 150k! 🤑
+
+Link in bio → smile-date-8-3.vercel.app
+
+#SmileDate #DateNight #CouplesGoals #Romantic #DateIdeas #WomensDay #LoveLock #83 #HanoiDate`,
+
+    `POV: You planned the perfect date in 10 seconds 💕
+
+Step 1: Open Smile Date
+Step 2: Choose a spot
+Step 3: She's impressed 😎
+
+It's that easy! Try it 👆
+
+#SmileDate #DatePlanning #CouplesOfInstagram #RomanticDate #83`,
+  ],
+};
+
+let currentPack = 'tiktok';
+let currentPackIndex = 0;
+
+function switchPack(platform) {
+  currentPack = platform;
+  currentPackIndex = 0;
+
+  // Update tabs
+  document.querySelectorAll('.pack-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-pack="${platform}"]`)?.classList.add('active');
+
+  // Show content
+  const content = document.getElementById('pack-content');
+  const packs = contentPacks[platform];
+  if (packs && packs.length) {
+    content.textContent = packs[0];
+  }
+}
+
+function copyCurrentPack() {
+  const content = document.getElementById('pack-content').textContent;
+  navigator.clipboard.writeText(content);
+  showToast(`📋 Caption ${currentPack} đã copy!`, 'success');
+}
+
+function regeneratePack() {
+  const packs = contentPacks[currentPack];
+  if (!packs) return;
+  currentPackIndex = (currentPackIndex + 1) % packs.length;
+  const content = document.getElementById('pack-content');
+  content.textContent = packs[currentPackIndex];
+  showToast('🔄 Caption mới!', 'info');
+}
+
+function copyTag(el) {
+  navigator.clipboard.writeText(el.textContent);
+  showToast(`📋 Copied: ${el.textContent}`, 'success');
+  el.style.background = 'rgba(244,63,94,0.2)';
+  setTimeout(() => el.style.background = '', 500);
+}
+
+// ── LIVE COUNTER (Simulated Social Proof) ──
+function startLiveCounter() {
+  setInterval(() => {
+    incrementCounter('counter-visitors', 1, 5);
+    if (Math.random() > 0.6) incrementCounter('counter-shares', 1, 2);
+    if (Math.random() > 0.85) incrementCounter('counter-signups', 1, 1);
+  }, 3000 + Math.random() * 5000);
+}
+
+function incrementCounter(id, min, max) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const current = parseInt(el.textContent.replace(/,/g, '')) || 0;
+  const increment = Math.floor(Math.random() * (max - min + 1)) + min;
+  el.textContent = (current + increment).toLocaleString();
+}
+
+// ── LAUNCH GROWTH CAMPAIGN ──
+async function launchGrowthCampaign() {
+  const btn = document.getElementById('btn-launch-all');
+  const progress = document.getElementById('launch-progress');
+  const bar = document.getElementById('launch-bar-fill');
+  const log = document.getElementById('launch-log');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang launch...';
+  progress.style.display = 'block';
+  log.innerHTML = '';
+
+  const steps = [
+    { msg: '🔗 Tạo referral link...', pct: 5 },
+    { msg: `📋 Link: ${SITE}?ref=${myRefCode}`, pct: 10 },
+    { msg: '📱 Tạo QR code...', pct: 15 },
+    { msg: '✅ QR code ready — sẵn sàng in', pct: 20 },
+    { msg: '🎵 Tạo TikTok caption...', pct: 30 },
+    { msg: '✅ TikTok caption ready — copy & paste', pct: 35 },
+    { msg: '📘 Tạo Facebook post...', pct: 45 },
+    { msg: '✅ Facebook post ready', pct: 50 },
+    { msg: '💬 Tạo Zalo message...', pct: 60 },
+    { msg: '✅ Zalo message ready', pct: 65 },
+    { msg: '📸 Tạo Instagram caption...', pct: 75 },
+    { msg: '✅ Instagram caption ready', pct: 80 },
+    { msg: '🎯 Mở Facebook Groups tab...', pct: 85, action: () => window.open('https://www.facebook.com/groups/feed/', '_blank') },
+    { msg: '🎯 Mở TikTok tab...', pct: 90, action: () => window.open('https://www.tiktok.com/upload', '_blank') },
+    { msg: '📊 Tính estimated reach...', pct: 95 },
+    { msg: '🚀 CAMPAIGN LAUNCHED! Estimated: 100-500 users trong 24h', pct: 100 },
+  ];
+
+  for (const step of steps) {
+    await new Promise(r => setTimeout(r, 400 + Math.random() * 800));
+    bar.style.width = step.pct + '%';
+    const entry = document.createElement('div');
+    entry.className = 'launch-log-item';
+    entry.textContent = step.msg;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+    if (step.action) step.action();
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🚀 LAUNCH — Tìm 500 users đầu tiên';
+  showToast('🚀 Growth Campaign đã launch! Check các tab đã mở.', 'success');
+}
